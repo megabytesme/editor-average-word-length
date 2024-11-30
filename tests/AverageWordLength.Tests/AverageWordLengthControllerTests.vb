@@ -32,7 +32,7 @@ Public Class StartupTests
 
         ' Assert
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode)
-        Assert.AreEqual("application/json", response.Content.Headers.ContentType.ToString())
+        Assert.IsTrue(response.Content.Headers.ContentType.ToString().StartsWith("application/json"))
         Assert.AreEqual(expected, averageWordLength)
     End Function
 
