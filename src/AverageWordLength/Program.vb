@@ -1,15 +1,31 @@
+Imports Microsoft.AspNetCore.Builder
 Imports Microsoft.AspNetCore.Hosting
+Imports Microsoft.Extensions.DependencyInjection
 Imports Microsoft.Extensions.Hosting
 
-Public Module Program
-    Public Sub Main(args As String())
+Public Class Program
+    Public Shared Sub Main(args As String())
         CreateHostBuilder(args).Build().Run()
     End Sub
 
-    Public Function CreateHostBuilder(args As String()) As IHostBuilder
-        Return Host.CreateDefaultBuilder(args).
-               ConfigureWebHostDefaults(Sub(webBuilder)
-                                            webBuilder.UseStartup(Of Startup)()
-                                        End Sub)
+    Public Shared Function CreateHostBuilder(args As String()) As IHostBuilder
+        Return Host.CreateDefaultBuilder(args) _
+            .ConfigureWebHostDefaults(Sub(webBuilder)
+                                          webBuilder.ConfigureServices(Sub(services)
+                                                                           services.AddControllers()
+                                                                       End Sub) _
+                                                   .Configure(Sub(app)
+                                                                  Dim env = app.ApplicationServices.GetService(Of IWebHostEnvironment)()
+                                                                  If env.IsDevelopment() Then
+                                                                      app.UseDeveloperExceptionPage()
+                                                                  End If
+
+                                                                  app.UseRouting()
+
+                                                                  app.UseEndpoints(Sub(endpoints)
+                                                                                       endpoints.MapControllers()
+                                                                                   End Sub)
+                                                              End Sub)
+                                      End Sub)
     End Function
-End Module
+End Class
