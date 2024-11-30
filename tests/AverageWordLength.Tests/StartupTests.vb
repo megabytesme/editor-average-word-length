@@ -6,11 +6,11 @@ Imports NUnit.Framework
 
 <TestFixture>
 Public Class StartupTests
-    Private _factory As WebApplicationFactory(Of AverageWordLength.Startup)
+    Private _factory As WebApplicationFactory(Of Program)
 
     <SetUp>
     Public Sub SetUp()
-        _factory = New WebApplicationFactory(Of AverageWordLength.Startup)()
+        _factory = New WebApplicationFactory(Of Program)()
     End Sub
 
     <TearDown>
@@ -19,13 +19,13 @@ Public Class StartupTests
     End Sub
 
     <Test>
-    <TestCase("?text=Hello world", 5)>
+    <TestCase("/average-word-length?text=Hello world", 5)>
     Public Async Function Get_AverageWordLength_ReturnsSuccess_AndResult(query As String, expected As Double) As Task
         ' Arrange
         Dim client = _factory.CreateClient()
 
         ' Act
-        Dim response = Await client.GetAsync("/" & query)
+        Dim response = Await client.GetAsync(query)
         Dim content = Await response.Content.ReadAsStringAsync()
         Dim jsonResponse = JObject.Parse(content)
         Dim averageWordLength = jsonResponse("average_word_length").Value(Of Double)()
@@ -37,13 +37,13 @@ Public Class StartupTests
     End Function
 
     <Test>
-    <TestCase("")>
+    <TestCase("/average-word-length?text=")>
     Public Async Function Get_AverageWordLength_MissingTextParameter_ReturnsBadRequest(query As String) As Task
         ' Arrange
         Dim client = _factory.CreateClient()
 
         ' Act
-        Dim response = Await client.GetAsync("/" & query)
+        Dim response = Await client.GetAsync(query)
 
         ' Assert
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode)
