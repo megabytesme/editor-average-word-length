@@ -1,0 +1,25 @@
+image: mcr.microsoft.com/dotnet/sdk:7.0
+
+stages:
+  - build
+  - test
+
+before_script:
+  - apt-get update -qy
+  - apt-get install -y nuget
+  - cd src/AverageWordLength
+  - dotnet restore
+  - cd ../../tests/AverageWordLength.Tests
+  - dotnet restore
+
+build:
+  stage: build
+  script:
+    - cd ../../src/AverageWordLength
+    - dotnet build --configuration Release
+
+test:
+  stage: test
+  script:
+    - cd ../../tests/AverageWordLength.Tests
+    - dotnet test --configuration Release
