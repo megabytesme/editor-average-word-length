@@ -1,5 +1,5 @@
 # editor-average-word-length
-A web service which provides the average word length in a provided string.
+A web service in Visual Basic which provides the average word length in a provided string.
 ## Usage
 First, build and run the service:
 ### Docker
