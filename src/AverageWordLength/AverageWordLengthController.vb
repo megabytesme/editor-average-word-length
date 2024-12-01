@@ -1,4 +1,5 @@
 Imports Microsoft.AspNetCore.Mvc
+Imports System.Text.Json
 
 <ApiController>
 <Route("average-word-length")>
@@ -15,6 +16,10 @@ Public Class AverageWordLengthController
         Dim totalLength = words.Sum(Function(word) word.Length)
         Dim averageLength = totalLength / words.Length
 
-        Return Ok(New With {Key .average_word_length = averageLength.ToString("F2")})
+        Dim result = New With {Key .average_word_length = averageLength.ToString("F2")}
+        Dim jsonResult = JsonSerializer.Serialize(result)
+        Response.ContentLength = jsonResult.Length
+
+        Return Ok(jsonResult)
     End Function
 End Class
