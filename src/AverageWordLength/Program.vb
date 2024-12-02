@@ -13,6 +13,11 @@ Public Class Program
             .ConfigureWebHostDefaults(Sub(webBuilder)
                                           webBuilder.ConfigureServices(Sub(services)
                                                                            services.AddControllers()
+                                                                           services.AddCors(Function(options)
+                                                                                               options.AddDefaultPolicy(Sub(builder)
+                                                                                                                            builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+                                                                                                                        End Sub)
+                                                                                           End Function)
                                                                        End Sub) _
                                                    .Configure(Sub(app)
                                                                   Dim env = app.ApplicationServices.GetService(Of IWebHostEnvironment)()
@@ -21,7 +26,7 @@ Public Class Program
                                                                   End If
 
                                                                   app.UseRouting()
-
+                                                                  app.UseCors()
                                                                   app.UseEndpoints(Sub(endpoints)
                                                                                        endpoints.MapControllers()
                                                                                    End Sub)
