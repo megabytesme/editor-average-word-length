@@ -11,26 +11,22 @@ Public Class Program
     Public Shared Function CreateHostBuilder(args As String()) As IHostBuilder
         Return Host.CreateDefaultBuilder(args) _
             .ConfigureWebHostDefaults(Sub(webBuilder)
-                                          webBuilder.ConfigureServices(Sub(services)
-                                                                           services.AddControllers()
-                                                                           services.AddCors(Function(options)
-                                                                                               options.AddDefaultPolicy(Sub(builder)
-                                                                                                                            builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
-                                                                                                                        End Sub)
-                                                                                           End Function)
-                                                                       End Sub) _
-                                                   .Configure(Sub(app)
-                                                                  Dim env = app.ApplicationServices.GetService(Of IWebHostEnvironment)()
-                                                                  If env.IsDevelopment() Then
-                                                                      app.UseDeveloperExceptionPage()
-                                                                  End If
+                webBuilder.ConfigureServices(Sub(services)
+                                                services.AddControllers()
+                                                services.AddCors(Sub(options)
+                                                                    options.AddDefaultPolicy(Sub(builder)
+                                                                                                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+                                                                                            End Sub)
+                                                                End Sub)
+                                            End Sub) _
+                            .Configure(Sub(app)
+                                        app.UseRouting()
+                                        app.UseCors()
+                                        app.UseEndpoints(Sub(endpoints)
+                                                                endpoints.MapControllers()
+                                                            End Sub)
+                                    End Sub)
+            End Sub)
 
-                                                                  app.UseRouting()
-                                                                  app.UseCors()
-                                                                  app.UseEndpoints(Sub(endpoints)
-                                                                                       endpoints.MapControllers()
-                                                                                   End Sub)
-                                                              End Sub)
-                                      End Sub)
     End Function
 End Class
